@@ -1,0 +1,11 @@
+Všechny body jsem splnil
+
+1. Používám vertex a fragment shader pomocí tříd Shader a ShaderProgram a taky VBO a VAO pro vykreslení modelů. Obrázek a je VBO a VAO a obrázek b je vykreslená trojúhelník
+
+2. Smazal jsem pár písmen v shaderu, na obrázku je chyba kterou mi to po spuštění vyspalo
+
+3. Přídán druhů trojúhelník abych měl čtverec a nastavení barev
+
+4./5. Přidal jsem model sphere a gift, které jsem si načetl ze souborů pomocí třídy Model. Na obrázku 4 je jeden model a na obrázku 5 oba modely.
+
+6. Relativní cesty použity, na obrázku např ukázáno u shaderu

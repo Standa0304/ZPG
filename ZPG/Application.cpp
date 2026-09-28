@@ -2,13 +2,15 @@
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
+#include "models/sphere.h"
+#include "models/gift.h"
 
-Application::Application() : window(nullptr), shaderSquare(nullptr), shaderTriangle(nullptr), square(nullptr), triangle(nullptr) {}
+Application::Application() : window(nullptr), normalProgram(nullptr), blueProgram(nullptr), plainModel(nullptr), secondModel(nullptr){}
 Application::~Application() {
-    delete shaderSquare;
-    delete shaderTriangle;
-    delete square;
-    delete triangle;
+    delete normalProgram;
+    delete blueProgram;
+    delete plainModel;
+    delete secondModel;
     if (window) glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -17,6 +19,10 @@ void Application::initialization() {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit()) { exit(EXIT_FAILURE); }
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
     window = glfwCreateWindow(800, 600, "ZPG", nullptr, nullptr);
     if (!window) {
         fprintf(stderr, "ERROR: could not create GLFW window\n");
@@ -24,12 +30,24 @@ void Application::initialization() {
         exit(EXIT_FAILURE);
     }
 
-    glEnable(GL_DEPTH_TEST);
-
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
-    glewExperimental = GL_TRUE;
-    glewInit();
+
+    if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress))
+    {
+        printf("GLAD initialization failed\n");
+
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+
+    printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+    printf("Vendor: %s\n", glGetString(GL_VENDOR));
+    printf("Renderer: %s\n", glGetString(GL_RENDERER));
+    printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    glEnable(GL_DEPTH_TEST);
 
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_callback);
@@ -43,60 +61,56 @@ void Application::initialization() {
     glViewport(0, 0, width, height);
 }
 
-void Application::createShaders() {
-    const char* vertex_shader =
-        "#version 330 core\n"
-        "layout(location = 0) in vec3 vp;\n"
-        "layout(location = 1) in vec3 normal;\n"
-        "uniform mat4 modelMatrix;\n"
-        "out vec3 fragNormal;\n"
-        "void main() {\n"
-        "    fragNormal = normal;\n"
-        "    gl_Position = modelMatrix * vec4(vp, 1.0);\n"
-        "}";
+void Application::createShaders()
+{
 
-    const char* fragment_shader =
-        "#version 330 core\n"
-        "in vec3 fragNormal;\n"
-        "out vec4 frag_colour;\n"
-        "void main() {\n"
-        "    frag_colour = vec4(normalize(fragNormal) * 0.5 + 0.5, 1.0);\n"
-        "}";
+    Shader* vertexShader =
+        new Shader(GL_VERTEX_SHADER, "shaders/basic.vert");
 
-    shaderSquare = new Shader(vertex_shader, fragment_shader);
-    shaderSquare->compile();
+    Shader* fragmentShader =
+        new Shader(GL_FRAGMENT_SHADER, "shaders/basic.frag");
+
+    Shader* blueFragmentShader =
+        new Shader(GL_FRAGMENT_SHADER, "shaders/blue.frag");
+
+    normalProgram =
+        new ShaderProgram(*vertexShader, *fragmentShader);
+
+    blueProgram =
+        new ShaderProgram(*vertexShader, *blueFragmentShader);
+
+    delete vertexShader;
+    delete fragmentShader;
+    delete blueFragmentShader;
+
 }
 
 void Application::createModels() {
-    float squareVertices[] = {
-        -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f
-    };
+    
+    plainModel = new Model((float*)sphere, sizeof(sphere), 6);
 
-
-
-    square = new Model(squareVertices, sizeof(squareVertices), 6, 6);
+    secondModel = new Model((float*)gift, sizeof(gift), 6);
 }
 
 void Application::run() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+      //  glm::mat4 M = glm::mat4(1.0f);
+   //     M = glm::translate(M, glm::vec3(-0.5f, 0.0f, -1.0f));
+   //     M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        shaderSquare->use();
         glm::mat4 M = glm::mat4(1.0f);
-        glm::translate(M, glm::vec3(-0.5f, 0.0f, -1.0f));
-        M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+        M = glm::scale(M, glm::vec3(0.3f));
+        M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
 
+        normalProgram->use();
+        plainModel->draw();
 
-        GLint loc = glGetUniformLocation(shaderSquare->getProgramID(), "modelMatrix");
-        if (loc != -1)
-            glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(M));
-        square->draw();
+        glClear(GL_DEPTH_BUFFER_BIT); 
+        
+        blueProgram->use();
+        secondModel->draw();
     
         glfwPollEvents();
         glfwSwapBuffers(window);

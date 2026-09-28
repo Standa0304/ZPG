@@ -1,0 +1,56 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Build ZPG",
+            "command": "/usr/bin/clang++",
+            "args": [
+                "-std=c++17",
+
+                "${workspaceFolder}/ZPG/Main.cpp",
+                "${workspaceFolder}/ZPG/Application.cpp",
+                "${workspaceFolder}/ZPG/Shader.cpp",
+                "${workspaceFolder}/ZPG/Model.cpp",
+                "${workspaceFolder}/ZPG/glad.cpp",
+                "${workspaceFolder}/ZPG/ShaderProgram.cpp",
+
+                "-I${workspaceFolder}/libraries",
+                "-I${workspaceFolder}/libraries/glfw-3.5.1.bin.MACOS/include",
+                "-I${workspaceFolder}/libraries/glm-master",
+
+                "-L${workspaceFolder}/libraries/glfw-3.5.1.bin.MACOS/lib-universal",
+
+                "-lglfw3",
+
+                "-framework",
+                "OpenGL",
+
+                "-framework",
+                "Cocoa",
+
+                "-framework",
+                "IOKit",
+
+                "-framework",
+                "CoreVideo",
+
+                "-framework",
+                "QuartzCore",
+
+                "-isysroot",
+                "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+
+                "-o",
+                "${workspaceFolder}/build/ZPG"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "Mac",
+            "compilerPath": "/usr/bin/clang++",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "includePath": [
+                "${workspaceFolder}/libraries",
+                "${workspaceFolder}/libraries/glfw-3.5.1.bin.MACOS/include",
+                "${workspaceFolder}/libraries/glm-master"
+            ]
+        }
+    ],
+    "version": 4
+}

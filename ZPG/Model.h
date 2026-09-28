@@ -1,14 +1,17 @@
 #pragma once
-#include <GL/glew.h>
+#include <cstddef>
+#include <glad/gl.h>
 
-class Model {
+class Model{
 private:
-    GLuint VBO, VAO;
+    GLuint VBO;
+    GLuint VAO;
+
     size_t vertexCount;
     size_t stride;
 
 public:
-    Model(float* vertices, size_t size, size_t count, size_t stride);
+    Model(float* vertices, size_t size, size_t stride);
     void draw();
     ~Model();
 };

@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run ZPG",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/ZPG",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/ZPG",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "preLaunchTask": "Build ZPG"
+        }
+    ]
+}
