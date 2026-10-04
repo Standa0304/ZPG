@@ -54,6 +54,74 @@ GLuint ShaderProgram::getID() const
     return programID;
 }
 
+void ShaderProgram::setUniform(const char* name, float value)
+{
+    GLint location = glGetUniformLocation(programID, name);
+
+    if (location == -1)
+    {
+        std::cout << "Uniform variable not found: "
+                  << name << std::endl;
+        return;
+    }
+
+    glUniform1f(location, value);
+}
+
+void ShaderProgram::setUniform(const char* name, int value)
+{
+    GLint location = glGetUniformLocation(programID, name);
+
+    if (location == -1)
+    {
+        std::cout << "Uniform variable not found: "
+                  << name << std::endl;
+        return;
+    }
+
+    glUniform1i(location, value);
+}
+
+
+void ShaderProgram::setUniform(const char* name, glm::vec3 value)
+{
+    GLint location = glGetUniformLocation(programID, name);
+
+    if (location == -1)
+    {
+        std::cout << "Uniform variable not found: "
+                  << name << std::endl;
+        return;
+    }
+
+    glUniform3f(
+        location,
+        value.x,
+        value.y,
+        value.z
+    );
+}
+
+void ShaderProgram::setUniform(const char* name, glm::vec4 value)
+{
+    GLint location = glGetUniformLocation(programID, name);
+
+    if (location == -1)
+    {
+        std::cout << "Uniform variable not found: "
+                  << name << std::endl;
+        return;
+    }
+
+    glUniform4f(
+        location,
+        value.x,
+        value.y,
+        value.z,
+        value.w
+    );
+}
+
 ShaderProgram::~ShaderProgram()
 {
     glDeleteProgram(programID);

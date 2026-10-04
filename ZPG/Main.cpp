@@ -6,14 +6,12 @@
 
 int main(void)
 {
-    Application* app = new Application();
+    Application app;
 
-    app->initialization();
-    app->createShaders();
-    app->createModels();
-    app->run();
-
-    delete app;
+    app.initialization();
+    app.createShaders();
+    app.createScenes();
+    app.run();
 
     return 0;
 }

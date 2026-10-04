@@ -4,13 +4,17 @@
 #include <stdio.h>
 #include "models/sphere.h"
 #include "models/gift.h"
+#include "models/tree.h"
+#include "models/bushes.h"
+#include "models/triangle.h"
+#include <cstdlib>
+#include <ctime>
+#include "models/login.h"
 
-Application::Application() : window(nullptr), normalProgram(nullptr), blueProgram(nullptr), plainModel(nullptr), secondModel(nullptr){}
+Application::Application() : window(nullptr), normalProgram(nullptr), blueProgram(nullptr), currentScene(nullptr){}
 Application::~Application() {
     delete normalProgram;
     delete blueProgram;
-    delete plainModel;
-    delete secondModel;
     if (window) glfwDestroyWindow(window);
     glfwTerminate();
 }
@@ -31,6 +35,7 @@ void Application::initialization() {
     }
 
     glfwMakeContextCurrent(window);
+
     glfwSwapInterval(1);
 
     if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress))
@@ -48,6 +53,8 @@ void Application::initialization() {
     printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     glEnable(GL_DEPTH_TEST);
+
+    glfwSetWindowUserPointer(window, this);
 
     glfwSetKeyCallback(window, key_callback);
     glfwSetCursorPosCallback(window, cursor_callback);
@@ -85,11 +92,50 @@ void Application::createShaders()
 
 }
 
-void Application::createModels() {
-    
-    plainModel = new Model((float*)sphere, sizeof(sphere), 6);
 
-    secondModel = new Model((float*)gift, sizeof(gift), 6);
+void Application::createScenes()
+{
+
+    Model* triangleModel = scene1.addModel((float*)triangle, sizeof(triangle), 6);
+
+    scene1.addObject(triangleModel, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.7f), 0.0f);
+
+    Model* sphereModel = scene2.addModel((float*)sphere, sizeof(sphere), 6);
+
+    scene2.addObject(sphereModel, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), 0.0f);
+
+
+    Model* treeModel = scene3.addModel((float*)tree, sizeof(tree), 6);
+
+    Model* bushModel = scene3.addModel((float*)bushes, sizeof(bushes), 6);
+
+    for (int i = 0; i < 20; i++)
+    {
+        float x = -0.8f + (float)rand() / RAND_MAX * 1.6f;
+        float z = -0.8f + (float)rand() / RAND_MAX * 1.6f;
+
+        float scale = 0.35f + (float)rand() / RAND_MAX * 0.35f;
+        float rotation = (float)rand() / RAND_MAX * 6.28318f;
+
+        scene3.addObject(treeModel, glm::vec3(x, 0.0f, z), glm::vec3(scale), rotation);
+    }
+
+    for (int i = 0; i < 30; i++)
+    {
+        float x = -0.8f + (float)rand() / RAND_MAX * 1.6f;
+        float z = -0.8f + (float)rand() / RAND_MAX * 1.6f;
+
+        float scale = 0.15f + (float)rand() / RAND_MAX * 0.20f;
+        float rotation = (float)rand() / RAND_MAX * 6.28318f;
+
+        scene3.addObject(bushModel, glm::vec3(x, -0.3f, z), glm::vec3(scale), rotation);
+    }
+
+     Model* loginModel = scene4.addModel((float*)loginData, sizeof(loginData), 6);
+
+    scene4.addObject(loginModel, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.6f);
+
+    currentScene = &scene1;
 }
 
 void Application::run() {
@@ -100,17 +146,12 @@ void Application::run() {
    //     M = glm::translate(M, glm::vec3(-0.5f, 0.0f, -1.0f));
    //     M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-        glm::mat4 M = glm::mat4(1.0f);
-        M = glm::scale(M, glm::vec3(0.3f));
-        M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 1.0f, 0.0f));
+        if (currentScene != nullptr)
+        {
+            normalProgram->use();
+            currentScene->draw(*normalProgram);
+        }
 
-        normalProgram->use();
-        plainModel->draw();
-
-        glClear(GL_DEPTH_BUFFER_BIT); 
-        
-        blueProgram->use();
-        secondModel->draw();
     
         glfwPollEvents();
         glfwSwapBuffers(window);
@@ -121,6 +162,32 @@ void Application::error_callback(int error, const char* description) { fputs(des
 
 void Application::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
+    
+    if (action == GLFW_PRESS)
+    {
+        Application* application = static_cast<Application*>(glfwGetWindowUserPointer(window));
+
+        if (key == GLFW_KEY_1)
+        {
+            application->currentScene = &application->scene1;
+        }
+
+        if (key == GLFW_KEY_2)
+        {
+            application->currentScene = &application->scene2;
+        }
+
+        if (key == GLFW_KEY_3)
+        {
+            application->currentScene = &application->scene3;
+        }
+
+        if (key == GLFW_KEY_4)
+        {
+            application->currentScene = &application->scene4;
+        }
+    }
+
     printf("key_callback [%d,%d,%d,%d]\n", key, scancode, action, mods);
 }
 void Application::window_focus_callback(GLFWwindow* window, int focused) { printf("window_focus_callback\n"); }

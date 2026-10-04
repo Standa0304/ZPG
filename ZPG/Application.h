@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "Model.h"
+#include "Scene.h"
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
@@ -19,15 +20,20 @@ public:
 
     void initialization();
     void createShaders();
-    void createModels();
+    void createScenes();
     void run();
 
 private:
     GLFWwindow* window;
     ShaderProgram* normalProgram;
     ShaderProgram* blueProgram;
-    Model* plainModel;
-    Model* secondModel;
+
+    Scene scene1;
+    Scene scene2;
+    Scene scene3;
+    Scene scene4;
+
+    Scene* currentScene;
 
     static void error_callback(int error, const char* description);
     static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
