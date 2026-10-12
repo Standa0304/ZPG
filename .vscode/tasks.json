@@ -15,7 +15,11 @@
                 "${workspaceFolder}/ZPG/glad.cpp",
                 "${workspaceFolder}/ZPG/ShaderProgram.cpp",
                 "${workspaceFolder}/ZPG/Scene.cpp",
-
+                "${workspaceFolder}/ZPG/DrawableObject.cpp",
+                "${workspaceFolder}/ZPG/ModelManager.cpp",
+                "${workspaceFolder}/ZPG/Camera.cpp",
+                "${workspaceFolder}/ZPG/Transformation.cpp",
+                
                 "-I${workspaceFolder}/libraries",
                 "-I${workspaceFolder}/libraries/glfw-3.5.1.bin.MACOS/include",
                 "-I${workspaceFolder}/libraries/glm-master",

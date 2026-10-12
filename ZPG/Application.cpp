@@ -96,28 +96,30 @@ void Application::createShaders()
 void Application::createScenes()
 {
 
-    Model* triangleModel = scene1.addModel((float*)triangle, sizeof(triangle), 6);
+    Model* triangleModel = modelManager.addModel((float*)triangle, sizeof(triangle), 6);
 
-    scene1.addObject(triangleModel, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.7f), 0.0f);
+    scene1.addObject(triangleModel, normalProgram, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.7f), 0.0f);
 
-    Model* sphereModel = scene2.addModel((float*)sphere, sizeof(sphere), 6);
+    Model* sphereModel = modelManager.addModel((float*)sphere, sizeof(sphere), 6);
 
-    scene2.addObject(sphereModel, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), 0.0f);
+    scene2.addObject(sphereModel, normalProgram, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), 0.0f);
 
 
-    Model* treeModel = scene3.addModel((float*)tree, sizeof(tree), 6);
+    Model* treeModel = modelManager.addModel((float*)tree, sizeof(tree), 6);
 
-    Model* bushModel = scene3.addModel((float*)bushes, sizeof(bushes), 6);
+    Model* bushModel = modelManager.addModel((float*)bushes, sizeof(bushes), 6);
 
     for (int i = 0; i < 20; i++)
     {
-        float x = -0.8f + (float)rand() / RAND_MAX * 1.6f;
-        float z = -0.8f + (float)rand() / RAND_MAX * 1.6f;
+        int randomX = -80 + rand() % 161;
+        int randomZ = -80 + rand() % 161;
+        int randomScale = 20 + rand() % 81;
 
-        float scale = 0.35f + (float)rand() / RAND_MAX * 0.35f;
-        float rotation = (float)rand() / RAND_MAX * 6.28318f;
-
-        scene3.addObject(treeModel, glm::vec3(x, 0.0f, z), glm::vec3(scale), rotation);
+        float randX = randomX / 100;
+        float randZ = randomZ / 100;
+        float randScale = randomScale / 100;
+        float rotation = 0;
+        scene3.addObject(treeModel, normalProgram, glm::vec3(randX, 0.0f, randZ), glm::vec3(randScale), rotation);
     }
 
     for (int i = 0; i < 30; i++)
@@ -128,12 +130,12 @@ void Application::createScenes()
         float scale = 0.15f + (float)rand() / RAND_MAX * 0.20f;
         float rotation = (float)rand() / RAND_MAX * 6.28318f;
 
-        scene3.addObject(bushModel, glm::vec3(x, -0.3f, z), glm::vec3(scale), rotation);
+        scene3.addObject(bushModel, normalProgram, glm::vec3(x, -0.3f, z), glm::vec3(scale), rotation);
     }
 
-     Model* loginModel = scene4.addModel((float*)loginData, sizeof(loginData), 6);
+     Model* loginModel = modelManager.addModel((float*)loginData, sizeof(loginData), 6);
 
-    scene4.addObject(loginModel, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.6f);
+    scene4.addObject(loginModel, normalProgram,  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.6f);
 
     currentScene = &scene1;
 }
@@ -142,9 +144,9 @@ void Application::run() {
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-      //  glm::mat4 M = glm::mat4(1.0f);
-   //     M = glm::translate(M, glm::vec3(-0.5f, 0.0f, -1.0f));
-   //     M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+    glm::mat4 M = glm::mat4(1.0f);
+    M = glm::translate(M, glm::vec3(-0.5f, 0.0f, -1.0f));
+    M = glm::rotate(M, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
         if (currentScene != nullptr)
         {

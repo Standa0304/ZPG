@@ -2,30 +2,16 @@
 
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 color;
-
+layout (location = 2) in vec3 normal;
 out vec3 vertexColor;
 
-uniform vec3 translation;
-uniform vec3 scale;
-uniform float rotationY;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
+uniform mat4 projectionMatrix;
 
 void main()
 {
-    float x = position.x * scale.x;
-    float y = position.y * scale.y;
-    float z = position.z * scale.z;
-
-    float rotatedX = cos(rotationY) * x + sin(rotationY) * z;
-
-    float rotatedY = y;
-
-    float rotatedZ = -sin(rotationY) * x + cos(rotationY) * z;
-
-    float finalX = rotatedX + translation.x;
-    float finalY = rotatedY + translation.y;
-    float finalZ = rotatedZ + translation.z;
-
     vertexColor = color;
 
-    gl_Position = vec4(finalX, finalY, finalZ, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 }

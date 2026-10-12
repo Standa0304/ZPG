@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
+#include "ModelManager.h"
 
 class Application {
 public:
@@ -27,6 +28,7 @@ private:
     GLFWwindow* window;
     ShaderProgram* normalProgram;
     ShaderProgram* blueProgram;
+    ModelManager modelManager;
 
     Scene scene1;
     Scene scene2;

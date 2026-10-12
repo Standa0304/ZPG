@@ -1,9 +1,9 @@
 #include "ShaderProgram.h"
+#include <glm/gtc/type_ptr.hpp>
+#include "ShaderProgram.h"
+#include "Camera.h"
 
-
-ShaderProgram::ShaderProgram(
-    Shader& vertexShader,
-    Shader& fragmentShader)
+ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader)
 {
     programID = glCreateProgram();
 
@@ -27,15 +27,9 @@ ShaderProgram::ShaderProgram(
     {
         char infoLog[1024];
 
-        glGetProgramInfoLog(
-            programID,
-            sizeof(infoLog),
-            nullptr,
-            infoLog
-        );
+        glGetProgramInfoLog(programID, sizeof(infoLog), nullptr, infoLog);
 
-        std::cout << "Shader program linking failed:"
-                  << std::endl;
+        std::cout << "Shader program linking failed:" << std::endl;
 
         std::cout << infoLog << std::endl;
 
@@ -60,8 +54,7 @@ void ShaderProgram::setUniform(const char* name, float value)
 
     if (location == -1)
     {
-        std::cout << "Uniform variable not found: "
-                  << name << std::endl;
+        std::cout << "Uniform variable not found: " << name << std::endl;
         return;
     }
 
@@ -74,8 +67,7 @@ void ShaderProgram::setUniform(const char* name, int value)
 
     if (location == -1)
     {
-        std::cout << "Uniform variable not found: "
-                  << name << std::endl;
+        std::cout << "Uniform variable not found: " << name << std::endl;
         return;
     }
 
@@ -89,8 +81,7 @@ void ShaderProgram::setUniform(const char* name, glm::vec3 value)
 
     if (location == -1)
     {
-        std::cout << "Uniform variable not found: "
-                  << name << std::endl;
+        std::cout << "Uniform variable not found: " << name << std::endl;
         return;
     }
 
@@ -108,18 +99,24 @@ void ShaderProgram::setUniform(const char* name, glm::vec4 value)
 
     if (location == -1)
     {
-        std::cout << "Uniform variable not found: "
-                  << name << std::endl;
+        std::cout << "Uniform variable not found: " << name << std::endl;
         return;
     }
 
-    glUniform4f(
-        location,
-        value.x,
-        value.y,
-        value.z,
-        value.w
-    );
+    glUniform4f(location, value.x, value.y, value.z, value.w);
+}
+
+void ShaderProgram::setUniform(const char* name, glm::mat4 value)
+{
+    GLint modelMatrixLocation = glGetUniformLocation(programID, name);
+
+    if (modelMatrixLocation == -1)
+    {
+        std::cout << "Uniform variable not found: " << name << std::endl;
+        return;
+    }
+
+    glUniformMatrix4fv(modelMatrixLocation,1,GL_FALSE,glm::value_ptr(value));
 }
 
 ShaderProgram::~ShaderProgram()
