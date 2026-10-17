@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "models/login.h"
+#include "models/sun.h"
 
 Application::Application() : window(nullptr), normalProgram(nullptr), blueProgram(nullptr), currentScene(nullptr){}
 Application::~Application() {
@@ -133,7 +134,7 @@ void Application::createScenes()
         scene3.addObject(bushModel, normalProgram, glm::vec3(x, -0.3f, z), glm::vec3(scale), rotation);
     }
 
-     Model* loginModel = modelManager.addModel((float*)loginData, sizeof(loginData), 6);
+     Model* loginModel = modelManager.addModel((float*)loginVertices, sizeof(loginVertices), 6);
 
     scene4.addObject(loginModel, normalProgram,  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.6f);
 
