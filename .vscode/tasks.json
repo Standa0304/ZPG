@@ -19,6 +19,7 @@
                 "${workspaceFolder}/ZPG/ModelManager.cpp",
                 "${workspaceFolder}/ZPG/Camera.cpp",
                 "${workspaceFolder}/ZPG/Transformation.cpp",
+                "${workspaceFolder}/ZPG/Light.cpp",
                 
                 "-I${workspaceFolder}/libraries",
                 "-I${workspaceFolder}/libraries/glfw-3.5.1.bin.MACOS/include",

@@ -24,3 +24,9 @@ void DrawableObject::draw()
 
     model->draw();
 }
+
+
+void DrawableObject::setModelMatrix(glm::mat4 matrix)
+{
+    modelMatrix = matrix;
+}

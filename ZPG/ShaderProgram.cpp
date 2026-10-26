@@ -1,10 +1,11 @@
 #include "ShaderProgram.h"
 #include <glm/gtc/type_ptr.hpp>
-#include "ShaderProgram.h"
 #include "Camera.h"
 
 ShaderProgram::ShaderProgram(Shader& vertexShader, Shader& fragmentShader)
 {
+    camera = nullptr;
+
     programID = glCreateProgram();
 
     if (programID == 0)
@@ -122,4 +123,58 @@ void ShaderProgram::setUniform(const char* name, glm::mat4 value)
 ShaderProgram::~ShaderProgram()
 {
     glDeleteProgram(programID);
+}
+
+void ShaderProgram::setCamera(Camera* camera)
+{
+    this->camera = camera;
+}
+
+void ShaderProgram::updateCamera(float aspectRatio)
+{
+    if (camera == nullptr)
+    {
+        return;
+    }
+
+    use();
+
+    setUniform("viewMatrix", camera->getViewMatrix());
+    setUniform("projectionMatrix", camera->getProjectionMatrix(aspectRatio));
+
+    GLint location = glGetUniformLocation(programID, "viewPosition");
+
+    if (location != -1)
+    {
+        glm::vec3 position = camera->getPosition();
+
+        glUniform3f(
+            location,
+            position.x,
+            position.y,
+            position.z
+        );
+
+    }
+}
+
+void ShaderProgram::setLight(Light* light)
+{
+    if (light == nullptr)
+    {
+        return;
+    }
+
+    use();
+
+    setUniform("lightPosition", light->getPosition());
+    setUniform("lightColor", light->getColor());
+
+    setUniform("ambientStrength", light->getAmbientStrength());
+    setUniform("diffuseStrength", light->getDiffuseStrength());
+    setUniform("specularStrength", light->getSpecularStrength());
+    setUniform("constantAttenuation", light->getConstantAttenuation());
+    setUniform("linearAttenuation", light->getLinearAttenuation());
+    setUniform("quadraticAttenuation", light->getQuadraticAttenuation());
+
 }

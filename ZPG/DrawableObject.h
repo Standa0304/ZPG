@@ -17,4 +17,5 @@ public:
     DrawableObject(Model* model, ShaderProgram* shaderProgram, glm::vec3 position, glm::vec3 scale, float rotationY);
 
     void draw();
+    void setModelMatrix(glm::mat4 matrix);
 };

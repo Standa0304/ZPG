@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "ShaderProgram.h"
 #include "Model.h"
+#include "DrawableObject.h"
 #include "Scene.h"
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -13,6 +14,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <fstream>
 #include "ModelManager.h"
+#include "Camera.h"
+#include "Light.h"
 
 class Application {
 public:
@@ -28,7 +31,20 @@ private:
     GLFWwindow* window;
     ShaderProgram* normalProgram;
     ShaderProgram* blueProgram;
+    ShaderProgram* ambientProgram;
+    ShaderProgram* lambertProgram;
+    ShaderProgram* phongProgram;
+    ShaderProgram* blinnProgram;
     ModelManager modelManager;
+    Camera* camera;
+    Light* light;
+    DrawableObject* earthObject;
+    DrawableObject* moonObject;
+
+    bool rightMousePressed;
+    double lastMouseX;
+    double lastMouseY;
+    float lastFrameTime;
 
     Scene scene1;
     Scene scene2;
@@ -44,4 +60,5 @@ private:
     static void window_size_callback(GLFWwindow* window, int width, int height);
     static void cursor_callback(GLFWwindow* window, double x, double y);
     static void button_callback(GLFWwindow* window, int button, int action, int mods);
+    static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 };

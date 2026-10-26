@@ -6,18 +6,22 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/ext/matrix_float4x4.hpp>
+#include "Light.h"
 
 class Camera;
 class ShaderProgram
 {
 private:
     GLuint programID;
-    Camera* m_camera;
+    Camera* camera;
 
 public:
     ShaderProgram(Shader& vertexShader, Shader& fragmentShader);
 
     void use();
+    void setCamera(Camera* camera);
+    void setLight(Light* light);
+    void updateCamera(float aspectRatio);
 
     GLuint getID() const;
 

@@ -15,7 +15,8 @@ public:
     Scene();
     ~Scene();
 
-    void addObject(Model* model, ShaderProgram* ShaderProgram, glm::vec3 position, glm::vec3 scale, float rotationY);
+    DrawableObject*  addObject(Model* model, ShaderProgram* ShaderProgram, glm::vec3 position, glm::vec3 scale, float rotationY);
 
-    void draw(ShaderProgram& shader);
+    void draw();
+
 };

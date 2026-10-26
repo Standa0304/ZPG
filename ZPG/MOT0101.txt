@@ -1,0 +1,11 @@
+1. a - Splněno
+b - Splněno
+c - Splněno
+d - Splněno
+
+2. a - Splněno - použitý konstantní shader, slunce na pozici světla
+b - Splněno - na Zemi a měsíc použit phongovo osvětlění
+c - Splněno - Přidán model rakety s Lambert osvětlení
+
+3. - Splněno - Všechny typy osvětlení odzkoušeny na scéně se 4 koulemi
+a. - Splněno - Díky aktualizaci viewportu podle výšky a šířky okna, je při změně poměru stran zachován tvar objektů, taky pro všechny shaderprogramy přepočítávám projekční matici podle aspectRatio
