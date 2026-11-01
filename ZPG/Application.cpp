@@ -18,7 +18,7 @@
     #include "models/rocket.h"
 
 
-    Application::Application() : window(nullptr), earthObject(nullptr), moonObject(nullptr), ambientProgram(nullptr), lambertProgram(nullptr), phongProgram(nullptr), blinnProgram(nullptr), normalProgram(nullptr), blueProgram(nullptr), camera(nullptr), light(nullptr), rightMousePressed(false), lastMouseX(0.0), lastMouseY(0.0), lastFrameTime(0.0f), currentScene(nullptr){}
+    Application::Application() : window(nullptr), firefly(nullptr), earthObject(nullptr), moonObject(nullptr), ambientProgram(nullptr), kouleProgram(nullptr), lambertProgram(nullptr), phongProgram(nullptr), blinnProgram(nullptr), normalProgram(nullptr), blueProgram(nullptr), camera(nullptr), light(nullptr), rightMousePressed(false), lastMouseX(0.0), lastMouseY(0.0), lastFrameTime(0.0f), currentScene(nullptr){}
     Application::~Application() {
         delete camera;
         delete light;
@@ -28,6 +28,7 @@
         delete lambertProgram; 
         delete phongProgram; 
         delete blinnProgram; 
+        delete kouleProgram; 
         if (window) glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -108,6 +109,9 @@
 
         Shader* blinnFragmentShader =
             new Shader(GL_FRAGMENT_SHADER, "shaders/blinn.frag");
+    
+        Shader* kouleFragmentShader =
+            new Shader(GL_FRAGMENT_SHADER, "shaders/koule.frag");
 
         Shader* blueFragmentShader =
             new Shader(GL_FRAGMENT_SHADER, "shaders/blue.frag");
@@ -123,6 +127,8 @@
         phongProgram = new ShaderProgram(*lightVertexShader, *phongFragmentShader);
 
         blinnProgram = new ShaderProgram(*lightVertexShader, *blinnFragmentShader);
+
+        kouleProgram = new ShaderProgram(*lightVertexShader, *kouleFragmentShader);
 
         delete vertexShader;
         delete fragmentShader;
@@ -150,6 +156,8 @@
         lambertProgram->setCamera(camera);
         phongProgram->setCamera(camera);
         blinnProgram->setCamera(camera);
+        kouleProgram->setCamera(camera);
+
 
     }
 
@@ -182,8 +190,8 @@
 
         for (int i = 0; i < 80; i++)
         {
-            int randomX = -800 + rand() % 1601;
-            int randomZ = -800 + rand() % 1601;
+            int randomX = -1500 + rand() % 3001;
+            int randomZ = -1500 + rand() % 3001;
             int randomScale = 10 + rand() % 71;
 
             float randX = randomX / 100.0f;
@@ -195,9 +203,9 @@
 
         for (int i = 0; i < 80; i++)
         {
-            int randomX = -800 + rand() % 1601;
-            int randomZ = -800 + rand() % 1601;
-            int randomScale = 40 + rand() % 21;
+            int randomX = -1500 + rand() % 3001;
+            int randomZ = -1500 + rand() % 3001;
+            int randomScale = 60 + rand() % 41;
 
             float randX = randomX / 100.0f;
             float randZ = randomZ / 100.0f;
@@ -205,7 +213,9 @@
 
             scene3.addObject(bushModel, phongProgram, glm::dvec3(randX, 0.0f, randZ), glm::vec3(randScale), 0.0f);
         }
-        scene3.addObject(plainModel, normalProgram, glm::vec3(0.0f, -0.05f, 0.0f), glm::vec3(20.0f, 1.0f, 20.0f), 0.0f);
+        firefly = scene3.addObject(sphereModel, kouleProgram, glm::vec3(0.0f, 1.7f, 0.0f), glm::vec3(0.08f), 0.0f);
+
+        scene3.addObject(plainModel, phongProgram, glm::vec3(0.0f, -0.05f, 0.0f), glm::vec3(20.0f, 1.0f, 20.0f), 0.0f);
 
         scene3.addObject(clockObjectModel, blueProgram, glm::vec3(3.0f, 1.0f, 2.0f), glm::vec3(0.2f, 0.2f, -0.2f), 0.0f);
 
@@ -269,6 +279,7 @@
                     lambertProgram->updateCamera(aspectRatio);
                     phongProgram->updateCamera(aspectRatio);
                     blinnProgram->updateCamera(aspectRatio);
+                    kouleProgram->updateCamera(aspectRatio);
 
                     if (currentScene == &scene1){
                         float time = (float)glfwGetTime();
@@ -306,8 +317,31 @@
 
                         currentScene->draw();
 
-                    }
-                    else
+                    }else if (currentScene == &scene3){
+                        float time = glfwGetTime();
+
+                        float speed = 0.5f;
+
+                        float radius = 5.0f;
+
+                        float x = cos(time * speed) * radius;
+                        float z = sin(time * speed) * radius;
+
+                        float y = 1.7f + sin(time * speed * 2.0f) * 0.5f;
+
+                        light->setPosition(glm::vec3(x, y, z));
+                        phongProgram->setLight(light);
+
+                        glm::mat4 fireflyMatrix(1.0f);
+
+                        fireflyMatrix = glm::translate(fireflyMatrix, glm::vec3(x, y, z));
+                        fireflyMatrix = glm::scale(fireflyMatrix, glm::vec3(0.08f));
+
+                        firefly->setModelMatrix(fireflyMatrix);
+
+                        currentScene->draw();
+
+                    }else
                     {
                         currentScene->draw();
                     }

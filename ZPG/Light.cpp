@@ -5,13 +5,13 @@ Light::Light()
     position = glm::vec3(0.0f, 0.0f, 0.0f);
     color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    ambientStrength = 0.2f;
-    diffuseStrength = 1.0f;
-    specularStrength = 0.5f;
+    ambientStrength = 0.1f;
+    diffuseStrength = 3.0f;
+    specularStrength = 0.2f;
 
     constantAttenuation = 1.0f;
     linearAttenuation = 0.09f;
-    quadraticAttenuation = 0.032f;
+    quadraticAttenuation = 0.042f;
 }
 
 glm::vec3 Light::getPosition() const

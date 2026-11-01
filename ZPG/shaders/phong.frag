@@ -21,9 +21,11 @@ uniform vec3 viewPosition;
 
 void main()
 {
-    vec3 objectColor = vertexColor;
+    vec3 objectColor = vec3(0.1, 0.28, 0.07);
 
     vec3 normal = normalize(worldNormal);
+
+    float distance = length(lightPosition - worldPosition);
 
     vec3 lightDirection = normalize(lightPosition - worldPosition);
 
@@ -35,10 +37,17 @@ void main()
     vec3 diffuse = diffuseStrength * diff * lightColor * objectColor;
 
     vec3 reflectDirection = reflect(-lightDirection, normal);
-    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
+    float spec = 0.0;
+
+    if (diff > 0.0)
+    {
+        spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32.0);
+    }
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = ambient + diffuse + specular;
+    float attenuation = 1.0 / (constantAttenuation + linearAttenuation * distance + quadraticAttenuation * distance * distance);
+
+    vec3 result = ambient + (diffuse + specular) * attenuation;
 
     FragColor = vec4(result, 1.0);
 }

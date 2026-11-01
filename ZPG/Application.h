@@ -35,9 +35,11 @@ private:
     ShaderProgram* lambertProgram;
     ShaderProgram* phongProgram;
     ShaderProgram* blinnProgram;
+    ShaderProgram* kouleProgram;
     ModelManager modelManager;
     Camera* camera;
     Light* light;
+    DrawableObject* firefly;
     DrawableObject* earthObject;
     DrawableObject* moonObject;
 
