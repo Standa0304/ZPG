@@ -13,11 +13,7 @@ Model::Model(float* vertices, size_t size, size_t stride)
     glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(
-        0, 3, GL_FLOAT, GL_FALSE,
-        stride * sizeof(float),
-        (void*)0
-    );
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)0);
 
     if (stride == 9)
     {
@@ -26,9 +22,16 @@ Model::Model(float* vertices, size_t size, size_t stride)
 
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE,stride * sizeof(float),(void*)(6 * sizeof(float)) );
+    }else if (stride == 8){
+
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,stride * sizeof(float), (void*)(3 * sizeof(float)));
+
+        glEnableVertexAttribArray(2);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,stride * sizeof(float),(void*)(6 * sizeof(float)) );
+        
     }
-    else
-    {
+    else{
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride * sizeof(float), (void*)(3 * sizeof(float)));
     }

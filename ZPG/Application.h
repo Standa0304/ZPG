@@ -16,6 +16,7 @@
 #include "ModelManager.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Skybox.h"
 
 class Application {
 public:
@@ -36,9 +37,12 @@ private:
     ShaderProgram* phongProgram;
     ShaderProgram* blinnProgram;
     ShaderProgram* kouleProgram;
+    ShaderProgram* textureProgram;
+    ShaderProgram* skyboxProgram;
     ModelManager modelManager;
     Camera* camera;
     Light* light;
+    Skybox* skybox;
     DrawableObject* firefly;
     DrawableObject* earthObject;
     DrawableObject* moonObject;
@@ -52,6 +56,7 @@ private:
     Scene scene2;
     Scene scene3;
     Scene scene4;
+    Scene scene5;
 
     Scene* currentScene;
 

@@ -15,10 +15,21 @@
     #include "models/clock.h"
     #include "models/earth.h"
     #include "models/moon.h"
+    #include "models/shrek/shrek.h"
+    #include "models/shrek/fiona.h"
+    #include "models/orangechair.h"
+    #include "models/sm_door.h"
+    #include "models/sm_eb408.h"
+    #include "models/sm_table.h"
+    #include "models/sm_whiteboard.h"
+    #include "models/arm_cushion_plates.h"
+
+
     #include "models/rocket.h"
 
 
-    Application::Application() : window(nullptr), firefly(nullptr), earthObject(nullptr), moonObject(nullptr), ambientProgram(nullptr), kouleProgram(nullptr), lambertProgram(nullptr), phongProgram(nullptr), blinnProgram(nullptr), normalProgram(nullptr), blueProgram(nullptr), camera(nullptr), light(nullptr), rightMousePressed(false), lastMouseX(0.0), lastMouseY(0.0), lastFrameTime(0.0f), currentScene(nullptr){}
+
+    Application::Application() : window(nullptr), firefly(nullptr), skybox(nullptr), skyboxProgram(nullptr), earthObject(nullptr), moonObject(nullptr), textureProgram(nullptr), ambientProgram(nullptr), kouleProgram(nullptr), lambertProgram(nullptr), phongProgram(nullptr), blinnProgram(nullptr), normalProgram(nullptr), blueProgram(nullptr), camera(nullptr), light(nullptr), rightMousePressed(false), lastMouseX(0.0), lastMouseY(0.0), lastFrameTime(0.0f), currentScene(nullptr){}
     Application::~Application() {
         delete camera;
         delete light;
@@ -29,6 +40,8 @@
         delete phongProgram; 
         delete blinnProgram; 
         delete kouleProgram; 
+        delete skybox;
+        delete skyboxProgram; 
         if (window) glfwDestroyWindow(window);
         glfwTerminate();
     }
@@ -89,6 +102,12 @@
         Shader* vertexShader =
             new Shader(GL_VERTEX_SHADER, "shaders/basic.vert");
 
+        Shader* textureVertexShader =
+            new Shader(GL_VERTEX_SHADER, "shaders/texture.vert");
+
+        Shader* textureFragmentShader =
+            new Shader(GL_FRAGMENT_SHADER, "shaders/texture.frag");
+
         Shader* lightVertexShader =
             new Shader(GL_VERTEX_SHADER, "shaders/light.vert");
 
@@ -116,6 +135,12 @@
         Shader* blueFragmentShader =
             new Shader(GL_FRAGMENT_SHADER, "shaders/blue.frag");
 
+        Shader* skyboxVertexShader = 
+            new Shader(GL_VERTEX_SHADER,"shaders/skybox.vert");
+
+        Shader* skyboxFragmentShader = 
+        new Shader(GL_FRAGMENT_SHADER, "shaders/skybox.frag");
+
         normalProgram = new ShaderProgram(*vertexShader, *fragmentShader);
 
         blueProgram = new ShaderProgram(*clockvertexShader, *blueFragmentShader);
@@ -130,6 +155,10 @@
 
         kouleProgram = new ShaderProgram(*lightVertexShader, *kouleFragmentShader);
 
+        textureProgram = new ShaderProgram(*textureVertexShader, *textureFragmentShader);
+
+        skyboxProgram = new ShaderProgram(*skyboxVertexShader, *skyboxFragmentShader);
+
         delete vertexShader;
         delete fragmentShader;
         delete blueFragmentShader;
@@ -139,6 +168,10 @@
         delete lambertFragmentShader;
         delete blinnFragmentShader;
         delete lightVertexShader;
+        delete skyboxFragmentShader;
+        delete skyboxVertexShader;
+        delete textureFragmentShader;
+        delete textureVertexShader;
 
         camera = new Camera(normalProgram);
 
@@ -156,7 +189,9 @@
         lambertProgram->setCamera(camera);
         phongProgram->setCamera(camera);
         blinnProgram->setCamera(camera);
+        textureProgram->setCamera(camera);
         kouleProgram->setCamera(camera);
+        skyboxProgram->setCamera(camera);
 
 
     }
@@ -219,9 +254,83 @@
 
         scene3.addObject(clockObjectModel, blueProgram, glm::vec3(3.0f, 1.0f, 2.0f), glm::vec3(0.2f, 0.2f, -0.2f), 0.0f);
 
+        Texture* shrekTexture = new Texture("models/shrek/shrek.png");
+        Texture* fionaTexture = new Texture("models/shrek/fiona.png");
+
+        Texture* chairTexture = new Texture("models/T_OrangeChair_BaseColor.png");
+        Texture* doorTexture = new Texture("models/T_door_basecolor.png");
+        Texture* tableTexture = new Texture("models/T_Table_BaseColor.png");
+        Texture* eb408Texture = new Texture("models/T_EB408.png");
+        Texture* whiteboardTexture = new Texture("models/T_Whiteboard_BaseColor.png");
+        Texture* chair2Texture = new Texture("models/preview_78361.jpg.png");
+
+        Model* shrekModel = modelManager.addModel((float*)shrek, sizeof(shrek), 8);
+        Model* fionaModel = modelManager.addModel((float*)fiona, sizeof(fiona), 8);
+
+        Model* chairModel = modelManager.addModel((float*)orangechair, sizeof(orangechair), 8);
+        Model* chair2Model = modelManager.addModel((float*)office_chair_panel_1, sizeof(office_chair_panel_1), 8);
+
+        Model* doorModel = modelManager.addModel((float*)sm_door, sizeof(sm_door), 8);
+        Model* tableModel = modelManager.addModel((float*)sm_table, sizeof(sm_table), 8);
+        Model* eb408Model = modelManager.addModel((float*)sm_eb408, sizeof(sm_eb408), 8);
+        Model* whiteboardModel = modelManager.addModel((float*)sm_whiteboard, sizeof(sm_whiteboard), 8);
+       
+        skybox = new Skybox(
+            "models/skybox/cubemap/posx.jpg",
+            "models/skybox/cubemap/negx.jpg",
+            "models/skybox/cubemap/posy.jpg",
+            "models/skybox/cubemap/negy.jpg",
+            "models/skybox/cubemap/posz.jpg",
+            "models/skybox/cubemap/negz.jpg",
+            skyboxProgram
+        );
+
+        scene3.setSkybox(skybox);
+        scene3.addObject(shrekModel, textureProgram, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.0f, shrekTexture);
+        scene3.addObject(fionaModel, textureProgram, glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.0f, fionaTexture);
+
         Model* loginModel = modelManager.addModel((float*)loginVertices, sizeof(loginVertices), 6);
 
         scene4.addObject(loginModel, normalProgram,  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.6f);
+
+        scene5.addObject(eb408Model, textureProgram,  glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), 0.0f, eb408Texture);
+        scene5.addObject(doorModel, textureProgram,  glm::vec3(-2.41f, 0.0f, 7.6f), glm::vec3(1.0f), 0.0f, doorTexture);
+        scene5.addObject(whiteboardModel, textureProgram,  glm::vec3(-3.5f, 0.0f, 3.0f), glm::vec3(1.0f), 0.0f, whiteboardTexture);
+        float chairX[] = { 2.9f, 1.3f, -0.3f };
+
+        for (int row = 0; row < 3; row++)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                float x = chairX[row];
+                float z = 1.0f + i * 0.8f;
+
+                scene5.addObject(chairModel, textureProgram, glm::vec3(x, 0.0f, z), glm::vec3(1.0f), glm::radians(270.0f), chairTexture);
+            }
+        }
+
+        float tableX[] = { 2.6f, 1.0f, -0.6f };
+
+        for (int row = 0; row < 3; row++)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                float x = tableX[row];
+                float z = 1.4f + i * 1.6f;
+
+                scene5.addObject(
+                    tableModel,
+                    textureProgram,
+                    glm::vec3(x, 0.0f, z),
+                    glm::vec3(1.0f),
+                    glm::radians(90.0f),
+                    tableTexture
+                );
+            }
+        }
+        scene5.addObject(tableModel, textureProgram,  glm::vec3(-2.8f, 0.0f, 1.4f), glm::vec3(1.0f), glm::radians(270.0f), tableTexture);
+        scene5.addObject(chair2Model, textureProgram,  glm::vec3(-3.2f, 0.0f, 1.4f), glm::vec3(1.0f), glm::radians(90.0f), chair2Texture);
+
 
         currentScene = &scene1;
     }
@@ -279,7 +388,9 @@
                     lambertProgram->updateCamera(aspectRatio);
                     phongProgram->updateCamera(aspectRatio);
                     blinnProgram->updateCamera(aspectRatio);
+                    textureProgram->updateCamera(aspectRatio);                    
                     kouleProgram->updateCamera(aspectRatio);
+                    skyboxProgram->updateCamera(aspectRatio);
 
                     if (currentScene == &scene1){
                         float time = (float)glfwGetTime();
@@ -381,6 +492,11 @@
             if (key == GLFW_KEY_4)
             {
                 application->currentScene = &application->scene4;
+            }
+
+            if (key == GLFW_KEY_5)
+            {
+                application->currentScene = &application->scene5;
             }
         }
 

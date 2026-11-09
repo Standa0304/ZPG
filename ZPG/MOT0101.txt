@@ -1,9 +1,8 @@
-1. a) Splněno - Špatně vypočítáná normála ve vertex shaderu a tedy špatné zobrazení osvětlení
-b) Splněno - Normála správně převedená pomoci inverze a následné transpozice
+1. a - Splněno, přidána knihovna stb_image na načítání textury, a oveřená funkčnost textur na modelu fiony a shreka
+b - Splněno, použite více modelů s více texturami
+c - Splněno, přidán skybox, třída skybox, úprava třídy Texture
 
-2. a) Splněno - Mocnina na 1, prosvítání světla na druhou stanu
-b) Splněno - Mocnina na 1. Ořezána specularní složka aby se zobrazovala pouze na správné straně
-c) Splněno - Špatné nastavení perspektivy pomoci aspectRatio které se nektualizuje
-d) Splněno - Správné zobrazení které aktiulazuje aspectRatio ve viewport a projekční matici
-
-3. Splněno - Přídána světluška která má nastavený v fragment shaderu útlum světla se vzdáleností 
+2. a - Splněno, přídán model učebny a další modely
+b - Splněno, přidána učitelská židle
+c - Splněno, na tabuli vyzobrazeno násobení matic a phonguv osvětlovací model
+d - Splněno, video nahráno na discord

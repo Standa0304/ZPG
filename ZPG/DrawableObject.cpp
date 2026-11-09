@@ -2,10 +2,11 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-DrawableObject::DrawableObject(Model* model, ShaderProgram* shaderProgram, glm::vec3 position, glm::vec3 scale, float rotationY)
+DrawableObject::DrawableObject(Model* model, ShaderProgram* shaderProgram,glm::vec3 position, glm::vec3 scale, float rotationY, Texture* texture)
 {
     this->model = model;
     this->shaderProgram = shaderProgram;
+    this->texture = texture;
 
     modelMatrix = glm::mat4(1.0f);
 
@@ -19,6 +20,13 @@ DrawableObject::DrawableObject(Model* model, ShaderProgram* shaderProgram, glm::
 void DrawableObject::draw()
 {
     shaderProgram->use();
+
+    if (texture != nullptr)
+    {
+        texture->bind(0);
+        shaderProgram->setUniform("textureUnitID", 0);
+    }
+
 
     shaderProgram->setUniform("modelMatrix", modelMatrix);
 

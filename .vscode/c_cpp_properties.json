@@ -8,7 +8,8 @@
             "includePath": [
                 "${workspaceFolder}/libraries",
                 "${workspaceFolder}/libraries/glfw-3.5.1.bin.MACOS/include",
-                "${workspaceFolder}/libraries/glm-master"
+                "${workspaceFolder}/libraries/glm-master",
+                "${workspaceFolder}/libraries/stb"
             ]
         }
     ],
